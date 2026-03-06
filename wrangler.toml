@@ -1,8 +1,17 @@
-name = "uptimeflare"
-compatibility_date = "2025-04-02"
-compatibility_flags = [ "nodejs_compat" ]
+# wrangler.toml - UptimeFlare Worker 配置（最小保活版）
 
+name = "uptimeflare-keepalive-gy"       # 自定义名字，会变成你的 Worker 子域名的一部分
+main = "worker/src/index.ts"             # ←←← 关键！入口文件路径（确认 worker/ 下是否有 src/index.ts）
+
+compatibility_date = "2026-03-01"        # 当前日期或更早，确保兼容
+compatibility_flags = ["nodejs_compat"]  # 支持 Node.js 兼容特性
+
+# D1 数据库绑定（UptimeFlare 用 D1 存历史数据/状态）
 [[d1_databases]]
-binding = "UPTIMEFLARE_D1"
-database_name = "uptimeflare_d1"
-database_id = "00000000-0000-0000-0000-000000000000"
+binding = "DB"                           # 代码里用 env.DB 访问
+database_name = "uptimeflare-db-gy"      # 自定义，第一次 deploy 会自动创建这个 D1 数据库
+# database_id = ""                       # 第一次留空，deploy 后 Cloudflare 会自动填入 ID
+
+# 可选：如果 Worker 需要 serve 静态文件（但你已删 public/，可忽略）
+# [site]
+# bucket = "./public"
