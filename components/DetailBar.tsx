@@ -24,7 +24,7 @@ export default function DetailBar({
     return Math.max(0, Math.min(x2, y2) - Math.max(x1, y1))
   }
 
-  const uptimePercentBars = []
+  const uptimePercentBars: JSX.Element[]= []
 
   const currentTime = Math.round(Date.now() / 1000)
   const montiorStartTime = state.incident[monitor.id][0].start[0]
