@@ -1,134 +1,81 @@
-// This is a simplified example config file for quickstart
-// Some not frequently used features are omitted/commented out here
-// For a full-featured example, please refer to `uptime.config.full.ts`
-
-// Don't edit this line
-import { MaintenanceConfig, PageConfig, WorkerConfig } from './types/config'
+import type { PageConfig, WorkerConfig, MaintenanceConfig } from './src/types'
 
 const pageConfig: PageConfig = {
-  // Title for your status page
-  title: "lyc8503's Status Page",
-  // Links shown at the header of your status page, could set `highlight` to `true`
+  title: "我的 Hugging Face Spaces 保活状态",
+  description: "实时监控 uu798 和 uu797 是否在线（防止 48 小时自动休眠）",
   links: [
-    { link: 'https://github.com/lyc8503', label: 'GitHub' },
-    { link: 'https://blog.lyc8503.net/', label: 'Blog' },
-    { link: 'mailto:me@lyc8503.net', label: 'Email Me', highlight: true },
+    { 
+      link: 'https://cciq200-uu798.hf.space', 
+      label: '打开 Space 1: uu798', 
+      highlight: true 
+    },
+    { 
+      link: 'https://uu798-uu797.hf.space', 
+      label: '打开 Space 2: uu797', 
+      highlight: true 
+    },
+    { 
+      link: 'https://huggingface.co/spaces/cciq200/uu798', 
+      label: 'HF 项目页 1' 
+    },
+    { 
+      link: 'https://huggingface.co/spaces/uu798/uu797', 
+      label: 'HF 项目页 2' 
+    },
   ],
 }
 
 const workerConfig: WorkerConfig = {
-  // Define all your monitors here
+  // 可选：如果想给状态页加简单密码保护，取消注释并改成你想要的 username:password
+  // passwordProtection: 'admin:你的密码',
+
+  // 全局默认 User-Agent（可被单个 monitor 覆盖）
+  defaultUA: 'UptimeFlare-HF-KeepAlive/2026',
+
   monitors: [
-    // Example HTTP Monitor
     {
-      // `id` should be unique, history will be kept if the `id` remains constant
-      id: 'foo_monitor',
-      // `name` is used at status page and callback message
-      name: 'My API Monitor',
-      // `method` should be a valid HTTP Method
+      id: 'hf_space_uu798',
+      name: 'Space uu798 (cciq200)',
       method: 'GET',
-      // `target` is a valid URL
-      target: 'https://example.com',
-      // [OPTIONAL] `tooltip` is ONLY used at status page to show a tooltip
-      tooltip: 'This is a tooltip for this monitor',
-      // [OPTIONAL] `statusPageLink` is ONLY used for clickable link at status page
-      statusPageLink: 'https://example.com',
-      // [OPTIONAL] `expectedCodes` is an array of acceptable HTTP response codes, if not specified, default to 2xx
-      expectedCodes: [200],
-      // [OPTIONAL] `timeout` in millisecond, if not specified, default to 10000
-      timeout: 10000,
-      // [OPTIONAL] headers to be sent
+      target: 'https://cciq200-uu798.hf.space',
+      timeout: 15000,                  // 15 秒超时
+      expectedCodes: [200, 503],       // 200=正常，503=HF 正在启动，也算活跃
+      interval: 3000,                   // 每 3000 秒（50 分钟）检查一次
+      retry: 2,                        // 失败重试 2 次
       headers: {
-        'User-Agent': 'Uptimeflare',
-        Authorization: 'Bearer YOUR_TOKEN_HERE',
+        'User-Agent': 'Mozilla/5.0 (compatible; UptimeFlare-HF/1.0)',  // 模拟浏览器访问，更像真实流量
       },
-      // [OPTIONAL] body to be sent (require POST/PUT/PATCH method)
-      // body: 'Hello, world!',
-      // [OPTIONAL] if specified, the response must contains the keyword to be considered as operational.
-      // responseKeyword: 'success',
-      // [OPTIONAL] if specified, the response must NOT contains the keyword to be considered as operational.
-      // responseForbiddenKeyword: 'bad gateway',
-      // [OPTIONAL] if specified, will call the check proxy to check the monitor, mainly for geo-specific checks
-      // refer to docs https://github.com/lyc8503/UptimeFlare/wiki/Check-proxy-setup before setting this value
-      // currently supports `worker://`, `globalping://` and `http(s)://` proxies
-      // checkProxy: 'worker://weur',
-      // [OPTIONAL] if true, the check will fallback to local if the specified proxy is down
-      // checkProxyFallback: true,
+      tooltip: 'Hugging Face Space - 自动保活，每5分钟 ping 一次',
+      statusPageLink: 'https://cciq200-uu798.hf.space',
+      // 可选：如果 Space 根路径有重定向或需要检查特定子路径，可改 target 为 '/health' 等
     },
-    // Example TCP Monitor
     {
-      id: 'test_tcp_monitor',
-      name: 'Example TCP Monitor',
-      // `method` should be `TCP_PING` for tcp monitors
-      method: 'TCP_PING',
-      // `target` should be `host:port` for tcp monitors
-      target: '1.2.3.4:22',
-      tooltip: 'My production server SSH',
-      statusPageLink: 'https://example.com',
-      timeout: 5000,
-    },
-  ],
-  // [Optional] Notification settings
-  notification: {
-    // [Optional] Notification webhook settings, if not specified, no notification will be sent
-    // More info at Wiki: https://github.com/lyc8503/UptimeFlare/wiki/Setup-notification
-    webhook: {
-      // [Required] webhook URL (example: Telegram Bot API)
-      url: 'https://api.telegram.org/bot123456:ABCDEF/sendMessage',
-      // [Optional] HTTP method, default to 'GET' for payloadType=param, 'POST' otherwise
-      // method: 'POST',
-      // [Optional] headers to be sent
-      // headers: {
-      //   foo: 'bar',
-      // },
-      // [Required] Specify how to encode the payload
-      // Should be one of 'param', 'json' or 'x-www-form-urlencoded'
-      // 'param': append url-encoded payload to URL search parameters
-      // 'json': POST json payload as body, set content-type header to 'application/json'
-      // 'x-www-form-urlencoded': POST url-encoded payload as body, set content-type header to 'x-www-form-urlencoded'
-      payloadType: 'x-www-form-urlencoded',
-      // [Required] payload to be sent
-      // $MSG will be replaced with the human-readable notification message
-      payload: {
-        chat_id: 12345678,
-        text: '$MSG',
+      id: 'hf_space_uu797',
+      name: 'Space uu797 (uu798)',
+      method: 'GET',
+      target: 'https://uu798-uu797.hf.space',
+      timeout: 15000,
+      expectedCodes: [200, 503],
+      interval: 3000,
+      retry: 2,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; UptimeFlare-HF/1.0)',
       },
-      // [Optional] timeout calling this webhook, in millisecond, default to 5000
-      timeout: 10000,
+      tooltip: 'Hugging Face Space - 自动保活，每5分钟 ping 一次',
+      statusPageLink: 'https://uu798-uu797.hf.space',
     },
-    // [Optional] timezone used in notification messages, default to "Etc/GMT"
-    timeZone: 'Asia/Shanghai',
-    // [Optional] grace period in minutes before sending a notification
-    // notification will be sent only if the monitor is down for N continuous checks after the initial failure
-    // if not specified, notification will be sent immediately
-    gracePeriod: 5,
-  },
+    // 如果以后要加更多监控（如你的网站、API），直接在这里继续加对象
+  ],
+
+  // 通知配置（可选，如果你想失败时收到 Telegram/Email/钉钉 等提醒）
+  // notification: {
+  //   telegram: { botToken: '你的token', chatId: '你的chatId' },
+  //   // 其他类型见官方 Wiki
+  // },
 }
 
-// You can define multiple maintenances here
-// During maintenance, an alert will be shown at status page
-// Also, related downtime notifications will be skipped (if any)
-// Of course, you can leave it empty if you don't need this feature
-
-// const maintenances: MaintenanceConfig[] = []
-
 const maintenances: MaintenanceConfig[] = [
-  {
-    // [Optional] Monitor IDs to be affected by this maintenance
-    monitors: ['foo_monitor', 'bar_monitor'],
-    // [Optional] default to "Scheduled Maintenance" if not specified
-    title: 'Test Maintenance',
-    // Description of the maintenance, will be shown at status page
-    body: 'This is a test maintenance, server software upgrade',
-    // Start time of the maintenance, in UNIX timestamp or ISO 8601 format
-    start: '2020-01-01T00:00:00+08:00',
-    // [Optional] end time of the maintenance, in UNIX timestamp or ISO 8601 format
-    // if not specified, the maintenance will be considered as on-going
-    end: '2050-01-01T00:00:00+08:00',
-    // [Optional] color of the maintenance alert at status page, default to "yellow"
-    color: 'blue',
-  },
+  // 如果有计划维护时间，可以在这里加（目前为空）
 ]
 
-// Don't edit this line
-export { maintenances, pageConfig, workerConfig }
+export { pageConfig, workerConfig, maintenances }
