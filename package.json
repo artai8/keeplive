@@ -2,13 +2,7 @@
   "name": "uptimeflare",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "preview": "npx @cloudflare/next-on-pages && wrangler pages dev .vercel/output/static",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
+  
   "dependencies": {
     "@cloudflare/workers-types": "^4.20250410.0",
     "@mantine/core": "^7.1.3",
